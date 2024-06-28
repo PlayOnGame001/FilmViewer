@@ -6,15 +6,18 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mime;
 using System.Text.Json;
 
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Добавляем контекст базе данных
+// Добавляем контекст базе данных для взаимодействия с ней 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite("Data Source=users.db"));
 
 var app = builder.Build();
 
-app.UseStaticFiles();
+app.UseStaticFiles();//подключение стат. файлов 
 
 // Инициализируем ее 
 using (var scope = app.Services.CreateScope())
@@ -23,6 +26,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+//Популярные фильмы отвечает за отображение популярныз фильмов 
 app.Map("/{page:int?}", async (HttpContext context, int page = 1) =>
 {
     context.Response.ContentType = "text/html";
@@ -32,6 +36,7 @@ app.Map("/{page:int?}", async (HttpContext context, int page = 1) =>
     return await HtmlBuilder.BuildPopularPage(movies, "");
 });
 
+//По жанру фильмы отвечает за отображение по жанру фильмов 
 app.Map("/Genre/{id:int}/{page:int?}", async (HttpContext context, int id, int page = 1) =>
 {
     context.Response.ContentType = "text/html";
@@ -41,6 +46,7 @@ app.Map("/Genre/{id:int}/{page:int?}", async (HttpContext context, int id, int p
     return await HtmlBuilder.BuildPopularPage(movies, $"/Genre/{id}");
 });
 
+//Поиск фильмо по названию
 app.Map("/Search/{search}/{page:int?}", async (HttpContext context, string search, int page = 1) =>
 {
     context.Response.ContentType = "text/html";
@@ -50,6 +56,7 @@ app.Map("/Search/{search}/{page:int?}", async (HttpContext context, string searc
     return await HtmlBuilder.BuildPopularPage(movies, $"/Search/{search}");
 });
 
+//Просмотр информации про фильм 
 app.Map("/Film/{id:int?}", async (HttpContext context, int id = 1) =>
 {
     context.Response.ContentType = "text/html";
@@ -59,12 +66,14 @@ app.Map("/Film/{id:int?}", async (HttpContext context, int id = 1) =>
     return await HtmlBuilder.BuildFilmPage(movie);
 });
 
+//Страница регистарции 
 app.MapGet("/register", async (HttpContext context) =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.WriteAsync(HtmlBuilder.BuildRegisterPage());
 });
 
+//Обработка данных регистрации 
 app.MapPost("/register", async (HttpContext context, ApplicationDbContext db) =>
 {
     string email = context.Request.Form["email"];
@@ -77,12 +86,14 @@ app.MapPost("/register", async (HttpContext context, ApplicationDbContext db) =>
     context.Response.Redirect("/");
 });
 
+//Страница авторизации 
 app.MapGet("/login", async (HttpContext context) =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.WriteAsync(HtmlBuilder.BuildLoginPage());
 });
 
+//Обработка данных авторизации 
 app.MapPost("/login", async (HttpContext context, ApplicationDbContext db) =>
 {
     string email = context.Request.Form["email"];
@@ -100,4 +111,4 @@ app.MapPost("/login", async (HttpContext context, ApplicationDbContext db) =>
     }
 });
 
-app.Run();
+app.Run();//ЗАПУСК

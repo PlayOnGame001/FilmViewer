@@ -6,6 +6,7 @@ namespace FilmViewer.Html
 {
     public static class HtmlBuilder
     {
+        //Главный по построению 
         private static string BuildHtml(string Body, string StylePath, string ScriptPath)
         {
             return $@"
@@ -24,7 +25,7 @@ namespace FilmViewer.Html
                 </html>
                 ";
         }
-
+        //так выглядит тело страницы 
         private static string BuildBody(string header, string main, string footer)
         {
             return $@"
@@ -33,7 +34,7 @@ namespace FilmViewer.Html
                 <footer>{footer}</footer>
                 ";
         }
-
+        //логотип 
         private static string BuildLogo()
         {
             return $@"
@@ -43,7 +44,7 @@ namespace FilmViewer.Html
                 </a>
                 ";
         }
-
+        //Кнопки регистрации и авторизации
         private static string BuildRegistrationButton()
         {
             return $@"
@@ -61,7 +62,7 @@ namespace FilmViewer.Html
                 </div>
                 ";
         }
-
+        //Поиск 
         private static string BuildSearch()
         {
             return $@"
@@ -71,7 +72,7 @@ namespace FilmViewer.Html
                 </div>
                 ";
         }
-
+        //кнопки выбора жанра 
         private static async Task<string> BuildGenres()
         {
             var genres = await MovieApi.GetGenreList();
@@ -86,7 +87,7 @@ namespace FilmViewer.Html
 
             return HtmlGenre;
         }
-
+        //Список фильмов 
         private static string BuildFilmsList(Movies Films)
         {
             string HtmlFilms = "<div class='filmsList'>";
@@ -107,6 +108,7 @@ namespace FilmViewer.Html
             return HtmlFilms;
         }
 
+        //пагинация 
         private static string BuildPagesList(int page, string path)
         {
             const int PreviousPages = 5;
@@ -124,7 +126,7 @@ namespace FilmViewer.Html
 
             return HtmlPages;
         }
-
+        //Заголовок страниц 
         private static async Task<string> BuildHeader()
         {
             return $@"
@@ -139,7 +141,7 @@ namespace FilmViewer.Html
                 {await BuildGenres()}
             </div>";
         }
-
+        //Страница лучших фильмов 
         public static async Task<string> BuildPopularPage(Movies movies, string PagesPath)
         {
             string HtmlFilms = BuildFilmsList(movies);
@@ -153,7 +155,7 @@ namespace FilmViewer.Html
                 "/styles/style.css",
                 "/scripts/script.js");
         }
-
+        //Страница с описанием выбраного фильма, оценкой и прочим 
         public static async Task<string> BuildFilmPage(Movie movie)
         {
             return BuildHtml(
@@ -171,7 +173,7 @@ namespace FilmViewer.Html
                 "/styles/style.css",
                 "/scripts/script.js");
         }
-
+        //Страница регистрации 
         public static string BuildRegisterPage(string errorMessage = "")
         {
             return BuildHtml(
@@ -196,7 +198,7 @@ namespace FilmViewer.Html
                 "/styles/style.css",
                 "/scripts/script.js");
         }
-
+        //страница авторизации
         public static string BuildLoginPage(string errorMessage = "")
         {
             return BuildHtml(
